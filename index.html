@@ -16,17 +16,7 @@
 
 		<div class="row">			
 			<div class='col-md-6 col-md-offset-3'>
-
-				<h1>Ejercicio de Vue.js | Género Dinámico</h1>
-
-				<hr>
 				
-				<select v-model='gender' class='form-control'>
-					<option value ='' selected>Escoge tu Género</option>
-					<option value="m">Masculino</option>
-					<option value="f">Femenino</option>		
-				</select>
-
 				<hr>
 
 				<template v-if='name'> 
@@ -34,14 +24,57 @@
 						{{ gender == 'm' ? 'Bienvenido' : 'Bienvenida' }}, {{ name }}
 					</h2>
 					<p>Espero que disfrutes tu vista</p>
-					<p>Tunombre al reves es: {{ name.split('').reverse().join('') }}</p>
+					<p>Tu nombre al réves es: {{ name.split('').reverse().join('') }}</p>
 				</template>
-				<p v-else>Por favor escribe tu Nombre</p>			
+				<p v-else>Por favor escribe tu Nombre</p>	
 
-				<input type='text' v-model='name' class='form-control'>
-				<p v-if='name == ""' class='alert alert-danger'>Este campo es obligatorio</p>
-				<p v-if='name.length < 2' class='alert alert-danger'>El nombre no es válido</p>
+				<form @submit.prevent='signUp(false)'>
+					<input type='text' v-model='name' class='form-control'>
 
+					<p v-if='name == ""' class='alert alert-danger'>
+						Este campo es obligatorio
+					</p>
+					<p v-if='name.length < 2' class='alert alert-danger'>
+						El nombre no es válido
+					</p>
+
+					<label>
+						Hombre: <input type='radio' v-model='gender' value='m'>
+					</label>
+					<label>
+						Mujer: <input type='radio' v-model='gender' value='f'>
+					</label>
+
+					<p>¿Cuantos años de experiencia tines con PHP?</p>
+					<p>
+						Respuesta: <strong>{{ years_php }}</strong>
+						<button type='button' 
+								:class='{btn: true, "btn-danger": years_php > 10 }' 
+								:style='{"font-size": 10+years_php+"px"}'
+								@click='addYear'>+</button>
+
+						<button type='button' 
+								class='btn' 
+								:disabled='years_php == 0' 
+								@click='subYear'>-</button>
+					</p>
+
+					<img src='logo.png' :title='years_php * 2'>
+
+					<hr>
+
+					<p v-show='name'>
+						<button type='submit' class='btn btn-primary'>
+							Regístrate
+						</button>
+
+						<button type='submit' class='btn btn-primary' @click.prevent='signUp(true, $event)'>
+							Regístrate y sal del sistema
+						</button>
+					</p>
+
+				</form>		
+					
 				<hr>
 
 				<pre> {{ $data | json }} </pre>
@@ -55,11 +88,30 @@
 				el: '#app',
 				data: {
 					name: '',
-					gender: ''
+					gender: '',
+					years_php: 0
+
+				},
+				methods:  {
+					signUp: function(logout, event) {						
+						event.preventDefault();
+						alert(this.name + ', por favor espera mientras te registramos.');
+
+						if (logout) {
+							alert('Saliendo del sistema.');
+						}
+					},
+					addYear: function() {						
+						this.years_php++;						
+					},
+					subYear: function(){
+						if (this.years_php > 0) {
+							this.years_php--;
+						}
+					}
 				}
 			});	
 
 		</script>
-
 	</body>
 </html>
